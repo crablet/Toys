@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <fstream>
 #include <Windows.h>
 #include <vector>
 #include <random>
@@ -7,6 +8,7 @@
 auto Handle = GetStdHandle(STD_OUTPUT_HANDLE);
 COORD Coord;
 unsigned Col, Row;
+bool IsAte = false;
 
 using namespace std;
 
@@ -110,6 +112,16 @@ bool IsAlive(const vector<_Snake> &Snake)
     return true;
 }
 
+inline void InitSnake(vector<_Snake> &Snake)
+{
+    Snake.reserve(16);
+    Snake.emplace_back(Col / 2, (Row / 2) + 0);
+    Snake.emplace_back(Col / 2, (Row / 2) + 1);
+    Snake.emplace_back(Col / 2, (Row / 2) + 2);
+    Snake.emplace_back(Col / 2, (Row / 2) + 3);
+    Snake.emplace_back(Col / 2, (Row / 2) + 4);
+}
+
 struct _Food
 {
     unsigned X, Y;
@@ -140,7 +152,6 @@ void DrawFood(struct _Food &Food, const vector<_Snake> &Snake)
 bool ContinueToGo(vector<_Snake> &Snake, struct _Food &Food, unsigned Where)
 {
     const auto PreTail = Snake.back();
-    bool IsAte = false;
 
     for (auto i = Snake.size() - 1; i >= 1; --i)
     {
@@ -189,7 +200,6 @@ bool ContinueToGo(vector<_Snake> &Snake, struct _Food &Food, unsigned Where)
 
     if (!IsAlive(Snake))
     {
-        system("cls");
         return false;
     }
 
@@ -207,12 +217,7 @@ int main()
     HideMouse(Handle, CursorInfo);
 
     vector<_Snake> Snake;
-    Snake.reserve(16);
-    Snake.emplace_back(Col / 2, (Row / 2) + 0);
-    Snake.emplace_back(Col / 2, (Row / 2) + 1);
-    Snake.emplace_back(Col / 2, (Row / 2) + 2);
-    Snake.emplace_back(Col / 2, (Row / 2) + 3);
-    Snake.emplace_back(Col / 2, (Row / 2) + 4);
+    InitSnake(Snake);
 
     struct _Food Food;
 
@@ -221,13 +226,15 @@ int main()
     DrawFood(Food, Snake);
 
     unsigned Where = 2;
-    unsigned Difficulty = 500;
+    unsigned long Difficulty = 500;
+
+    char PreHit = 0;
 
     while (1)
     {
-        Sleep(Difficulty);
+        IsAte = false;
 
-        char PreHit = 0;
+        Sleep(Difficulty);
 
         if (_kbhit())
         {
@@ -259,7 +266,7 @@ int main()
                 }
 
                 if (PreHit == NowHit)
-                    Difficulty = Difficulty < 50 ? Difficulty : (Difficulty - 50);
+                    Difficulty = Difficulty < 50 ? Difficulty : (Difficulty - 3);
 
                 PreHit = NowHit;
             }
@@ -268,11 +275,16 @@ int main()
         if (!ContinueToGo(Snake, Food, Where))
             break;
 
+        if (IsAte)
+            Difficulty = static_cast<unsigned long>(Difficulty - Snake.size() * 0.3);
+
         GotoXY(Row + 3, 0);
-        cout << "Score: " << Snake.size() - 5;
+        cout << "Score: " << Snake.size() - 5 << endl;
+        cout << "Speed: " << (500 - Difficulty) << endl;
     }
 
-    cout << "Your final score: " << Snake.size() - 5 << endl;
+    GotoXY(Row + 3, 0);
+    cout << "Your final score is " << Snake.size() - 5 << endl;
     system("pause");
 
     return 0;
