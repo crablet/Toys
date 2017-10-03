@@ -86,8 +86,11 @@ public:
 
 void DrawSnake(const vector<_Snake> &Snake)
 {
+    // Print the head of snake.
     GotoXY(Snake[0].X, Snake[0].Y);
     putchar('@');
+
+    //Print the body of snake.
     for (auto iter = Snake.cbegin() + 1; iter != Snake.cend(); ++iter)
     {
         GotoXY(iter->X, iter->Y);
@@ -97,24 +100,30 @@ void DrawSnake(const vector<_Snake> &Snake)
 
 bool IsAlive(const vector<_Snake> &Snake)
 {
+    // The head of snake touches the wall.
     if (Snake.front().X == 0 || Snake.front().Y == 0
         || Snake.front().X == Row || Snake.front().Y == Col + 1)
     {
         return false;
     }
 
+    // The head of snake touches itself.
     for (auto iter = Snake.cbegin() + 1; iter != Snake.cend(); ++iter)
     {
         if (Snake.front().X == iter->X && Snake.front().Y == iter->Y)
             return false;
     }
 
+    // Still alive.
     return true;
 }
 
 inline void InitSnake(vector<_Snake> &Snake)
 {
+    // I assume that you can got 16 points at least.
     Snake.reserve(16);
+
+    // Be born in the middle of the field.
     Snake.emplace_back(Col / 2, (Row / 2) + 0);
     Snake.emplace_back(Col / 2, (Row / 2) + 1);
     Snake.emplace_back(Col / 2, (Row / 2) + 2);
@@ -132,8 +141,12 @@ void DrawFood(struct _Food &Food, const vector<_Snake> &Snake)
     while (true)
     {
         bool Flag = true;
+
+        // Initialize Food(x, y).
         Food.X = Random(Row - 1);
         Food.Y = Random(Col - 1);
+
+        // Check if (Food(x, y) == Snake(x, y)).
         for (const auto &S : Snake)
         {
             if (S.X == Food.X && S.Y == Food.Y)
@@ -142,22 +155,29 @@ void DrawFood(struct _Food &Food, const vector<_Snake> &Snake)
                 break;
             }
         }
+
+        // Check passed.
         if (Flag)
             break;
     }
+
+    // Draw the food.
     GotoXY(Food.X, Food.Y);
     putchar('8');
 }
 
 bool ContinueToGo(vector<_Snake> &Snake, struct _Food &Food, unsigned Where)
 {
+    // Backup for the extension of the snake.
     const auto PreTail = Snake.back();
 
+    // Every part of the body moves to the previous one.
     for (auto i = Snake.size() - 1; i >= 1; --i)
     {
         Snake[i] = Snake[i - 1];
     }
 
+    // The head of snake moves.
     switch (Where)
     {
     case 0:
@@ -176,11 +196,14 @@ bool ContinueToGo(vector<_Snake> &Snake, struct _Food &Food, unsigned Where)
         break;
     }
 
+    // Cover the previous '@'(head of snake).
     GotoXY(Snake[1].X, Snake[1].Y);
     putchar('O');
 
+    // If it eats.
     if (Snake.front().X == Food.X && Snake.front().Y == Food.Y)
     {
+        // Head-Body-Tail => Head-Body-Tail-PreTail
         Snake.push_back(PreTail);
         IsAte = true;
     }
@@ -191,10 +214,12 @@ bool ContinueToGo(vector<_Snake> &Snake, struct _Food &Food, unsigned Where)
     }
     else
     {
+        // Cover the 'O'. ('O' => ' ')
         GotoXY(PreTail.X, PreTail.Y);
         putchar(' ');
     }
 
+    // Draw the head of snake.
     GotoXY(Snake.front().X, Snake.front().Y);
     putchar('@');
 
@@ -208,8 +233,9 @@ bool ContinueToGo(vector<_Snake> &Snake, struct _Food &Food, unsigned Where)
 
 int main()
 {
-    SetConsoleTitle("贪吃蛇");
+    SetConsoleTitle("Gluttonous Snake");
 
+    cout << "Please input col and row: ";
     cin >> Col >> Row;
     system("cls");
 
@@ -230,7 +256,7 @@ int main()
 
     char PreHit = 0;
 
-    while (1)
+    while (true)
     {
         IsAte = false;
 
@@ -245,22 +271,30 @@ int main()
                 NowHit = _getch();
                 switch (NowHit)
                 {
+                // Up
                 case 72:
                     if (Where == 2 || Where == 3)
                         Where = 0;
                     break;
+
+                // Down
                 case 80:
                     if (Where == 2 || Where == 3)
                         Where = 1;
                     break;
+
+                // Left
                 case 75:
                     if (Where == 0 || Where == 1)
                         Where = 2;
                     break;
+
+                // Right
                 case 77:
                     if (Where == 0 || Where == 1)
                         Where = 3;
                     break;
+
                 default:
                     break;
                 }
