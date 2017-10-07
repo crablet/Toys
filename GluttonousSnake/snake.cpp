@@ -3,8 +3,10 @@
 #include <vector>
 #include <random>
 #include <conio.h>
-#include <map>
+#include <utility>
 #include <ctime>
+#include <iomanip>
+#include <chrono>
 
 auto Handle = GetStdHandle(STD_OUTPUT_HANDLE);
 COORD Coord;
@@ -243,8 +245,7 @@ int main()
 {
     SetConsoleTitle("Gluttonous Snake");
 
-    //vector<map<int, const time_t>> Scores;
-    vector<int> Scores;
+    vector<pair<int, time_t>> Scores;
 
     while (1)
     {
@@ -332,9 +333,9 @@ int main()
         GotoXY(Row + 3, 0);
         cout << "Your final score is " << Snake.size() - 5 << endl;
 
-        //const auto Now = time(0);
-        //Scores.push_back(make_pair(Snake.size() - 5, Now));
-        Scores.push_back(Snake.size() - 5);
+        const auto Now = std::chrono::system_clock::now();
+        const auto Now_c = std::chrono::system_clock::to_time_t(Now);
+        Scores.push_back({ Snake.size() - 5, Now_c });
 
         char C;
         ShowMouse(Handle, CursorInfo);
@@ -346,16 +347,28 @@ int main()
         }
         else if (C == 'N')
         {
+            putchar('\n');
+            putchar('\n');
+            cout << "NO.  Score          Time" << endl;
             if (!Scores.empty())
             {
                 int i = 0;
                 for (const auto &r : Scores)
                 {
                     ++i;
-                    cout << i << ": " << r << endl;
+                    cout << i << ":   " << r.first << "      " 
+                         << std::put_time(std::localtime(&r.second), "%F %T") << endl;
                 }
-                break;
             }
+
+            putchar('\n');
+            sort(Scores.begin(), Scores.end(), [](pair<int, time_t> m, pair<int, time_t> n) 
+                                                 { 
+                                                    return m.first > n.first;
+                                                 });
+            cout << "The highest score is: " << Scores.front().first << endl;
+
+            break;
         }
         else
         {
