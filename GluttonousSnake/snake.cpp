@@ -3,6 +3,8 @@
 #include <vector>
 #include <random>
 #include <conio.h>
+#include <map>
+#include <ctime>
 
 auto Handle = GetStdHandle(STD_OUTPUT_HANDLE);
 COORD Coord;
@@ -34,6 +36,13 @@ inline void HideMouse(HANDLE &Handle, CONSOLE_CURSOR_INFO &CursorInfo)
 {
     GetConsoleCursorInfo(Handle, &CursorInfo);
     CursorInfo.bVisible = false;
+    SetConsoleCursorInfo(Handle, &CursorInfo);
+}
+
+inline void ShowMouse(HANDLE &Handle, CONSOLE_CURSOR_INFO &CursorInfo)
+{
+    GetConsoleCursorInfo(Handle, &CursorInfo);
+    CursorInfo.bVisible = true;
     SetConsoleCursorInfo(Handle, &CursorInfo);
 }
 
@@ -234,91 +243,128 @@ int main()
 {
     SetConsoleTitle("Gluttonous Snake");
 
-    cout << "Please input col and row: ";
-    cin >> Col >> Row;
-    system("cls");
+    //vector<map<int, const time_t>> Scores;
+    vector<int> Scores;
 
-    CONSOLE_CURSOR_INFO CursorInfo;
-    HideMouse(Handle, CursorInfo);
-
-    vector<_Snake> Snake;
-    InitSnake(Snake);
-
-    struct _Food Food;
-
-    DrawWall();
-    DrawSnake(Snake);
-    DrawFood(Food, Snake);
-
-    unsigned Where = 2;
-    unsigned long Difficulty = 500;
-
-    char PreHit = 0;
-
-    while (true)
+    while (1)
     {
-        IsAte = false;
+        cout << "Please input col and row: ";
+        cin >> Col >> Row;
+        std::system("cls");
 
-        Sleep(Difficulty);
+        CONSOLE_CURSOR_INFO CursorInfo;
+        HideMouse(Handle, CursorInfo);
 
-        if (_kbhit())
+        vector<_Snake> Snake;
+        InitSnake(Snake);
+
+        struct _Food Food;
+
+        DrawWall();
+        DrawSnake(Snake);
+        DrawFood(Food, Snake);
+
+        unsigned Where = 2;
+        unsigned long Difficulty = 500;
+
+        char PreHit = 0;
+
+        while (1)
         {
-            char NowHit = _getch();
+            IsAte = false;
 
-            if (NowHit == -32)
+            Sleep(Difficulty);
+
+            if (_kbhit())
             {
-                NowHit = _getch();
-                switch (NowHit)
+                char NowHit = _getch();
+
+                if (NowHit == -32)
                 {
-                // Up
-                case 72:
-                    if (Where == 2 || Where == 3)
-                        Where = 0;
-                    break;
+                    NowHit = _getch();
+                    switch (NowHit)
+                    {
+                        // Up
+                    case 72:
+                        if (Where == 2 || Where == 3)
+                            Where = 0;
+                        break;
 
-                // Down
-                case 80:
-                    if (Where == 2 || Where == 3)
-                        Where = 1;
-                    break;
+                        // Down
+                    case 80:
+                        if (Where == 2 || Where == 3)
+                            Where = 1;
+                        break;
 
-                // Left
-                case 75:
-                    if (Where == 0 || Where == 1)
-                        Where = 2;
-                    break;
+                        // Left
+                    case 75:
+                        if (Where == 0 || Where == 1)
+                            Where = 2;
+                        break;
 
-                // Right
-                case 77:
-                    if (Where == 0 || Where == 1)
-                        Where = 3;
-                    break;
+                        // Right
+                    case 77:
+                        if (Where == 0 || Where == 1)
+                            Where = 3;
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
+                    }
+
+                    if (PreHit == NowHit)
+                        Difficulty = Difficulty < 50 ? Difficulty : (Difficulty - 3);
+
+                    PreHit = NowHit;
                 }
+            }
 
-                if (PreHit == NowHit)
-                    Difficulty = Difficulty < 50 ? Difficulty : (Difficulty - 3);
+            if (!ContinueToGo(Snake, Food, Where))
+                break;
 
-                PreHit = NowHit;
+            if (IsAte)
+                Difficulty = static_cast<unsigned long>(Difficulty - Snake.size() * 0.3);
+
+            GotoXY(Row + 3, 0);
+            cout << "Score: " << Snake.size() - 5 << endl;
+            cout << "Speed: " << (500 - Difficulty) << endl;
+        }
+        GotoXY(Row + 3, 0);
+        cout << "Your final score is " << Snake.size() - 5 << endl;
+
+        //const auto Now = time(0);
+        //Scores.push_back(make_pair(Snake.size() - 5, Now));
+        Scores.push_back(Snake.size() - 5);
+
+        char C;
+        ShowMouse(Handle, CursorInfo);
+        cout << "Continue? (Y/N)" << endl;
+        cin >> C;
+        if (C == 'Y')
+        {
+            std::system("cls");
+        }
+        else if (C == 'N')
+        {
+            if (!Scores.empty())
+            {
+                int i = 0;
+                for (const auto &r : Scores)
+                {
+                    ++i;
+                    cout << i << ": " << r << endl;
+                }
+                break;
             }
         }
-
-        if (!ContinueToGo(Snake, Food, Where))
+        else
+        {
+            cout << "Input error." << endl;
             break;
-
-        if (IsAte)
-            Difficulty = static_cast<unsigned long>(Difficulty - Snake.size() * 0.3);
-
-        GotoXY(Row + 3, 0);
-        cout << "Score: " << Snake.size() - 5 << endl;
-        cout << "Speed: " << (500 - Difficulty) << endl;
+        }
     }
 
-    GotoXY(Row + 3, 0);
-    cout << "Your final score is " << Snake.size() - 5 << endl;
-    system("pause");
+    std::system("pause");
 
     return 0;
 }
