@@ -1,17 +1,31 @@
 #include <iostream>
 #include <array>
 #include <Windows.h>
-#include <conio.h>
+#include <chrono>
 
 using namespace std;
 
 unsigned GetDirection();
 
-//墙1  空地0  箱子2 人3 目的地4
-array<array<int, 19>, 6> Map
+inline void HideMouse(HANDLE &Handle, CONSOLE_CURSOR_INFO &CursorInfo)
+{
+    GetConsoleCursorInfo(Handle, &CursorInfo);
+    CursorInfo.bVisible = false;
+    SetConsoleCursorInfo(Handle, &CursorInfo);
+}
+
+inline void ShowMouse(HANDLE &Handle, CONSOLE_CURSOR_INFO &CursorInfo)
+{
+    GetConsoleCursorInfo(Handle, &CursorInfo);
+    CursorInfo.bVisible = true;
+    SetConsoleCursorInfo(Handle, &CursorInfo);
+}
+
+//墙1  空地0  箱子2 人3 目的地4 箱子在目的地中6 人+目的地=人7
+array<array<int, 19>, 6> Map =
 {{
     { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-    { 1, 0, 0, 0, 4, 4, 4, 0, 0, 3, 0, 0, 4, 4, 4, 0, 0, 0, 1 },
+    { 1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
     { 1, 0, 2, 2, 2, 0, 0, 1, 1, 1, 1, 1, 0, 0, 2, 2, 2, 0, 1 },
     { 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1 },
     { 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0 },
@@ -23,7 +37,6 @@ unsigned There = 100;
 class Player
 {
 public:
-    int X, Y;
     Player() = default;
     Player(int x, int y) :
            X(x), Y(y)
@@ -38,24 +51,25 @@ public:
 
     void MoveTo(unsigned There);
     bool CanMoveTo(unsigned There);
-
+private:
+    int X, Y;
 };
 
 bool Player::CanMoveTo(unsigned There)
 {
-    if (There == 0 && Map[X][Y - 1] == 1)
+    if (There == 0 && (Map[X][Y - 1] == 1 || Map[X][Y - 1] == 4)) // Left
     {
         return false;
     }
-    else if (There == 1 && Map[X][Y + 1] == 1)
+    else if (There == 1 && (Map[X][Y + 1] == 1 || Map[X][Y + 1] == 4)) // Right
     {
         return false;
     }
-    else if (There == 2 && Map[X - 1][Y] == 1)
+    else if (There == 2 && (Map[X - 1][Y] == 1 || Map[X - 1][Y] == 4)) // Up
     {
         return false;
     }
-    else if (There == 3 && Map[X + 1][Y] == 1)
+    else if (There == 3 && (Map[X + 1][Y] == 1 || Map[X + 1][Y] == 4)) // Down
     {
         return false;
     }
@@ -67,56 +81,76 @@ void Player::MoveTo(unsigned There)
 {
     switch (There)
     {
-    case 0:
-        if (Map[X][Y - 1] == 0) // 前面是空地
+    case 0: // Left
+    {
+        if (Map[X][Y - 1] == 0 || Map[X][Y - 1] == 4) // 前面是空地
         {
-            --Y;
+            Map[X][Y] = 0;
+            Map[X][Y - 1] = 3;
+            this->MoveLeft();
         }
         else if (Map[X][Y - 1] == 2 && Map[X][Y - 2] == 0) // 前面是箱子但可以移动
         {
-            Map[X][Y - 1] = 0;
+            Map[X][Y] = 0;
+            Map[X][Y - 1] = 3;
             Map[X][Y - 2] = 2;
-            --Y;
+            this->MoveLeft();
         }
+    }
         break;
 
-    case 1:
-        if (Map[X][Y + 1] == 0) // 前面是空地
+    case 1: // Right
+    {
+        if (Map[X][Y + 1] == 0 || Map[X][Y + 1] == 4) // 前面是空地
         {
-            ++Y;
+            Map[X][Y] = 0;
+            Map[X][Y + 1] = 3;
+            this->MoveRight();
         }
         else if (Map[X][Y + 1] == 2 && Map[X][Y + 2] == 0) // 前面是箱子但可以移动
         {
-            Map[X][Y + 1] = 0;
+            Map[X][Y] = 0;
+            Map[X][Y + 1] = 3;
             Map[X][Y + 2] = 2;
-            ++Y;
+            this->MoveRight();
         }
+    }
         break;
 
-    case 2:
-        if (Map[X - 1][Y] == 0) // 前面是空地
+    case 2: // Up
+    {
+        if (Map[X - 1][Y] == 0 || Map[X - 1][Y] == 4) // 前面是空地
         {
-            --X;
+            Map[X][Y] = 0;
+            Map[X - 1][Y] = 3;
+            this->MoveUp();
         }
         else if (Map[X - 1][Y] == 2 && Map[X - 2][Y] == 0) // 前面是箱子但可以移动
         {
-            Map[X - 1][Y] = 0;
+            Map[X][Y] = 0;
+            Map[X - 1][Y] = 3;
             Map[X - 2][Y] = 2;
-            --X;
+            this->MoveUp();
         }
+    }
         break;
 
-    case 3:
-        if (Map[X + 1][Y] == 0) // 前面是空地
+    case 3: // Down
+    {
+        if (Map[X + 1][Y] == 0 || Map[X + 1][Y] == 4) // 前面是空地
         {
-            ++X;
+            Map[X][Y] = 0;
+            Map[X + 1][Y] = 3;
+            this->MoveDown();
         }
         else if (Map[X + 1][Y] == 2 && Map[X + 2][Y] == 0) // 前面是箱子但可以移动
         {
-            Map[X + 1][Y] = 0;
+            Map[X][Y] = 0;
+            Map[X + 1][Y] = 3;
             Map[X + 2][Y] = 2;
-            ++X;
+            this->MoveDown();
         }
+    }
         break;
 
     default:
@@ -128,7 +162,7 @@ void DrawMap()
 {
     for (int i = 0; i < 6; ++i)
     {
-        for (int p = 0; p < 16; ++p)
+        for (int p = 0; p < 19; ++p)
         {
             switch (Map[i][p])
             {
@@ -153,13 +187,13 @@ Returns:
 */
 inline unsigned GetDirection()
 {
-    if (GetKeyState(VK_LEFT) < 0)
+    if (GetKeyState(VK_LEFT) & 0x8000)
         return 0;
-    else if (GetKeyState(VK_RIGHT) < 0)
+    else if (GetKeyState(VK_RIGHT) & 0x8000)
         return 1;
-    else if (GetKeyState(VK_UP) < 0)
+    else if (GetKeyState(VK_UP) & 0x8000)
         return 2;
-    else if (GetKeyState(VK_DOWN) < 0)
+    else if (GetKeyState(VK_DOWN) & 0x8000)
         return 3;
     else
         return 4;
@@ -167,19 +201,29 @@ inline unsigned GetDirection()
 
 int main()
 {
-    Player MyPlayer(1, 9);
+    Player MyPlayer(1, 3);
+    auto Handle = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO CursorInfo;
+    HideMouse(Handle, CursorInfo);
     DrawMap();
+    auto Now = std::chrono::system_clock::now();
+    decltype(Now) Past = Now - 1s;
     while (1)
     {
-        if (_kbhit())
+        Now = std::chrono::system_clock::now();
+        if (Now >= Past - 1s)
         {
-            system("cls");
             There = GetDirection();
-            if (MyPlayer.CanMoveTo(There))
+            if (There != 4)
             {
-                MyPlayer.MoveTo(There);
+                system("cls");
+                if (MyPlayer.CanMoveTo(There))
+                {
+                    MyPlayer.MoveTo(There);
+                }
                 DrawMap();
             }
+            Past = Now;
         }
     }
 
