@@ -22,14 +22,18 @@ inline void ShowMouse(HANDLE &Handle, CONSOLE_CURSOR_INFO &CursorInfo)
 }
 
 //墙1  空地0  箱子2 人3 目的地4 箱子在目的地中6 人+目的地=人7
-array<array<int, 19>, 6> Map =
+array<array<int, 19>, 10> Map =
 {{
     { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
     { 1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-    { 1, 0, 2, 2, 2, 0, 0, 1, 1, 1, 1, 1, 0, 0, 2, 2, 2, 0, 1 },
-    { 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1 },
-    { 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0 },
-    { 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0 }
+    { 1, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+    { 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1 },
+    { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+    { 1, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 1 },
+    { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+    { 1, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+    { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
 }};
 
 unsigned There = 100;
@@ -50,12 +54,12 @@ public:
     void MoveRight() { ++Y; }
 
     void MoveTo(unsigned There);
-    bool CanMoveTo(unsigned There);
+    bool CanMoveTo(unsigned There) const;
 private:
     int X, Y;
 };
 
-bool Player::CanMoveTo(unsigned There)
+bool Player::CanMoveTo(unsigned There) const
 {
     if (There == 0 && (Map[X][Y - 1] == 1 || Map[X][Y - 1] == 4)) // Left
     {
@@ -85,15 +89,21 @@ void Player::MoveTo(unsigned There)
     {
         if (Map[X][Y - 1] == 0 || Map[X][Y - 1] == 4) // 前面是空地
         {
+            // 修改地图上人和空地的坐标
             Map[X][Y] = 0;
             Map[X][Y - 1] = 3;
+            
+            // 修改人在内存中的坐标
             this->MoveLeft();
         }
         else if (Map[X][Y - 1] == 2 && Map[X][Y - 2] == 0) // 前面是箱子但可以移动
         {
+            // 修改地图上人、箱子和空地的坐标
             Map[X][Y] = 0;
             Map[X][Y - 1] = 3;
             Map[X][Y - 2] = 2;
+
+            // 修改人在内存中的坐标
             this->MoveLeft();
         }
     }
@@ -103,15 +113,21 @@ void Player::MoveTo(unsigned There)
     {
         if (Map[X][Y + 1] == 0 || Map[X][Y + 1] == 4) // 前面是空地
         {
+            // 修改地图上人和空地的坐标
             Map[X][Y] = 0;
             Map[X][Y + 1] = 3;
+
+            // 修改人在内存中的坐标
             this->MoveRight();
         }
         else if (Map[X][Y + 1] == 2 && Map[X][Y + 2] == 0) // 前面是箱子但可以移动
         {
+            // 修改地图上人、箱子和空地的坐标
             Map[X][Y] = 0;
             Map[X][Y + 1] = 3;
             Map[X][Y + 2] = 2;
+
+            // 修改人在内存中的坐标
             this->MoveRight();
         }
     }
@@ -121,15 +137,21 @@ void Player::MoveTo(unsigned There)
     {
         if (Map[X - 1][Y] == 0 || Map[X - 1][Y] == 4) // 前面是空地
         {
+            // 修改地图上人和空地的坐标
             Map[X][Y] = 0;
             Map[X - 1][Y] = 3;
+
+            // 修改人在内存中的坐标
             this->MoveUp();
         }
         else if (Map[X - 1][Y] == 2 && Map[X - 2][Y] == 0) // 前面是箱子但可以移动
         {
+            // 修改地图上人、箱子和空地的坐标
             Map[X][Y] = 0;
             Map[X - 1][Y] = 3;
             Map[X - 2][Y] = 2;
+
+            // 修改人在内存中的坐标
             this->MoveUp();
         }
     }
@@ -139,15 +161,21 @@ void Player::MoveTo(unsigned There)
     {
         if (Map[X + 1][Y] == 0 || Map[X + 1][Y] == 4) // 前面是空地
         {
+            // 修改地图上人和空地的坐标
             Map[X][Y] = 0;
             Map[X + 1][Y] = 3;
+
+            // 修改人在内存中的坐标
             this->MoveDown();
         }
         else if (Map[X + 1][Y] == 2 && Map[X + 2][Y] == 0) // 前面是箱子但可以移动
         {
+            // 修改地图上人、箱子和空地的坐标
             Map[X][Y] = 0;
             Map[X + 1][Y] = 3;
             Map[X + 2][Y] = 2;
+
+            // 修改人在内存中的坐标
             this->MoveDown();
         }
     }
@@ -160,7 +188,7 @@ void Player::MoveTo(unsigned There)
 
 void DrawMap()
 {
-    for (int i = 0; i < 6; ++i)
+    for (int i = 0; i < 10; ++i)
     {
         for (int p = 0; p < 19; ++p)
         {
@@ -187,13 +215,13 @@ Returns:
 */
 inline unsigned GetDirection()
 {
-    if (GetKeyState(VK_LEFT) & 0x8000)
+    if (GetKeyState(VK_LEFT) & 0b1000000000000000)
         return 0;
-    else if (GetKeyState(VK_RIGHT) & 0x8000)
+    else if (GetKeyState(VK_RIGHT) & 0b1000000000000000)
         return 1;
-    else if (GetKeyState(VK_UP) & 0x8000)
+    else if (GetKeyState(VK_UP) & 0b1000000000000000)
         return 2;
-    else if (GetKeyState(VK_DOWN) & 0x8000)
+    else if (GetKeyState(VK_DOWN) & 0b1000000000000000)
         return 3;
     else
         return 4;
@@ -208,6 +236,7 @@ int main()
     DrawMap();
     auto Now = std::chrono::system_clock::now();
     decltype(Now) Past = Now - 1s;
+
     while (1)
     {
         Now = std::chrono::system_clock::now();
@@ -216,12 +245,12 @@ int main()
             There = GetDirection();
             if (There != 4)
             {
-                system("cls");
                 if (MyPlayer.CanMoveTo(There))
                 {
+                    system("cls");
                     MyPlayer.MoveTo(There);
+                    DrawMap();
                 }
-                DrawMap();
             }
             Past = Now;
         }
