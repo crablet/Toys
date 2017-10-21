@@ -1,19 +1,9 @@
+#include <string.h>
 #include <stdio.h>
 #include <malloc.h>
-#include <string.h>
-
-#define CAPACITY 50
-#define HEAD 0
-#define FIND_ONLY 0
-#define FIND_AND_PRINT 1
+#include "Items.h"
 
 int Tail = 0;
-
-typedef struct ItemsInfo
-{
-    char Name[50];
-    double Price;
-}Item;
 
 void InfoInit(Item *Items[])
 {
@@ -39,18 +29,41 @@ void InfoInit(Item *Items[])
     fclose(fp);
 }
 
-int InfoSearch(Item *Items[], const char *str)
+int InfoSearch(Item *Items[], const char *str, unsigned Flag)
 {
     for (int i = 0; i < Tail; ++i)
     {
         if (strcmp(Items[i]->Name, str) == 0)
         {
-            printf("Found. It is %lf %s\n", Items[i]->Price, Items[i]->Name);
-            return i;
+            if (Flag == FIND_AND_PRINT)
+            {
+                printf("Found. It is %lf %s\n", Items[i]->Price, Items[i]->Name);
+                return i;
+            }
+            else if (Flag == FIND_ONLY)
+            {
+                return i;
+            }
+            else
+            {
+                return -2;
+            }
         }
     }
-    printf("Sorry, I can't find it.\n");
-    return -1;
+
+    if (Flag == FIND_AND_PRINT)
+    {
+        printf("Sorry, I can't find it.\n");
+        return -1;
+    }
+    else if (Flag == FIND_ONLY)
+    {
+        return -1;
+    }
+    else
+    {
+        return -2;
+    }
 }
 
 void InfoInsert(Item *Items[], const char *str, double Price)
@@ -78,9 +91,13 @@ inline void StrReplace(char *Destination, const char *Source)
 void InfoChange(Item *Items[], const char *str)
 {
     int i;
-    if ((i = InfoSearch(Items, str)) == -1)
+    if ((i = InfoSearch(Items, str, FIND_ONLY)) == -1)
     {
-        printf("Not found.");
+        printf("Not found.\n");
+        printf("Would you like to insert this item to the list?\n");
+
+        // TODO
+
         return;
     }
     else
@@ -101,10 +118,10 @@ void InfoChange(Item *Items[], const char *str)
 
 void InfoDelete(Item *Items[], const char *str)
 {
-    int i;
-    if ((i = InfoSearch(Items, str)) == -1)
+    int i = InfoSearch(Items, str, FIND_ONLY);
+    if (i == -1)
     {
-        printf("Not found.");
+        printf("Not found.\n");
         return;
     }
     else
@@ -155,16 +172,4 @@ void OutputAll(Item *Items[])
         putchar('\n');
         ++i;
     }
-}
-
-int main(void)
-{
-    Item *Items[CAPACITY] = { NULL };
-
-    InfoInit(Items);
-    InfoInsert(Items, "qqqqqqqqqqqqq", 700);
-    InfoDelete(Items, "bbbbbbbbbbbbbbb");
-    OutputAll(Items);
-    InfoFlush(Items);
-    return 0;
 }
