@@ -37,7 +37,7 @@ int InfoSearch(Item *Items[], const char *str, unsigned Flag)
         {
             if (Flag == FIND_AND_PRINT)
             {
-                printf("Found. It is %lf %s\n", Items[i]->Price, Items[i]->Name);
+                printf("商品""%s""的价格是：%lf\n。", Items[i]->Name, Items[i]->Price);
                 return i;
             }
             else if (Flag == FIND_ONLY)
@@ -53,7 +53,7 @@ int InfoSearch(Item *Items[], const char *str, unsigned Flag)
 
     if (Flag == FIND_AND_PRINT)
     {
-        printf("Sorry, I can't find it.\n");
+        printf("对不起，找不到名为""%s""的商品。", str);
         return -1;
     }
     else if (Flag == FIND_ONLY)
@@ -93,8 +93,8 @@ void InfoChange(Item *Items[], const char *str)
     int i;
     if ((i = InfoSearch(Items, str, FIND_ONLY)) == -1)
     {
-        printf("Not found.\n");
-        printf("Would you like to insert this item to the list?\n");
+        printf("对不起，找不到名为""%s""的商品。", str);
+        //printf("Would you like to insert this item to the list?\n");
 
         // TODO
 
@@ -102,14 +102,14 @@ void InfoChange(Item *Items[], const char *str)
     }
     else
     {
-        printf("Change what?");
+        printf("您想修改哪个商品的信息？");
 
-        printf("Name: ");
+        printf("商品名：");
         char str[50];
         scanf("%s", str);
         StrReplace(Items[i]->Name, str);
 
-        printf("Price: ");
+        printf("修改后的价格为：");
         double Price;
         scanf("%lf", &Price);
         Items[i]->Price = Price;
@@ -121,7 +121,7 @@ void InfoDelete(Item *Items[], const char *str)
     int i = InfoSearch(Items, str, FIND_ONLY);
     if (i == -1)
     {
-        printf("Not found.\n");
+        printf("对不起，找不到名为""%s""的商品。", str);
         return;
     }
     else

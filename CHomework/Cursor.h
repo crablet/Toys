@@ -29,8 +29,10 @@ inline unsigned GetDirection()
         return 2;
     else if (GetKeyState(VK_DOWN) & 0b1000000000000000)
         return 3;
-    else
+    else if (GetKeyState(VK_RETURN) & 0b1000000000000000)
         return 4;
+    else
+        return 5;
 }
 
 #endif // !CURSOR_H
