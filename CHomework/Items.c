@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <malloc.h>
 #include "Items.h"
+#include "Menu.h"
 
 int Tail = 0;
 
@@ -64,6 +65,8 @@ int InfoSearch(Item *Items[], const char *str, unsigned Flag)
     {
         return -2;
     }
+
+    ShowMenu();
 }
 
 void InfoInsert(Item *Items[], const char *str, double Price)
@@ -114,6 +117,8 @@ void InfoChange(Item *Items[], const char *str)
         scanf("%lf", &Price);
         Items[i]->Price = Price;
     }
+
+    ShowMenu();
 }
 
 void InfoDelete(Item *Items[], const char *str)
@@ -137,6 +142,8 @@ void InfoDelete(Item *Items[], const char *str)
         Items[Tail] = NULL;
         --Tail;
     }
+
+    ShowMenu();
 }
 
 void InfoFlush(Item *Items[])
@@ -172,4 +179,6 @@ void OutputAll(Item *Items[])
         putchar('\n');
         ++i;
     }
+
+    ShowMenu();
 }
