@@ -16,8 +16,6 @@
 extern int Control;
 extern char Hit;
 
-#define DEBUG
-
 int main(void)
 {
     SetConsoleTitle("Items Management System");
@@ -37,69 +35,72 @@ int main(void)
 
     while (1)
     {
-        ShowMenu();
-
-        if (Hit == 13)
+        if (_kbhit())
         {
-            switch (Control)
+            ShowMenu();
+
+            if (Hit == 13)
             {
-            case 0:
-            {
-                system("cls");
-                printf("你想查询哪个商品？\n");
-                char str[50];
-                scanf("%s", str);
-                InfoSearch(Items, str, FIND_AND_PRINT);
+                switch (Control)
+                {
+                case 0:
+                {
+                    system("cls");
+                    printf("你想查询哪个商品？\n");
+                    char str[50];
+                    scanf("%s", str);
+                    InfoSearch(Items, str, FIND_AND_PRINT);
 
 #ifdef DEBUG
-                printf("%s", str);
+                    printf("%s", str);
 #endif
 
-            }
-            break;
-
-            case 1:
-            {
-                system("cls");
-                printf("你想修改哪个商品的信息？\n");
-                char str[50];
-                scanf("%s", str);
-                InfoChange(Items, str);
-
-#ifdef DEBUG
-                printf("%s", str);
-#endif
-
-            }
-            break;
-
-            case 2:
-            {
-                system("cls");
-                printf("你想删除哪个商品？\n");
-                char str[50];
-                scanf("%s", str);
-                InfoDelete(Items, str);
-
-#ifdef DEBUG
-                printf("%s", str);
-#endif
-
-            }
-            break;
-
-            case 3:
-                system("cls");
-                printf("目前的商品如下\n");
-                OutputAll(Items);
-                InfoFlush(Items);
-
+                }
                 break;
 
-            default:
+                case 1:
+                {
+                    system("cls");
+                    printf("你想修改哪个商品的信息？\n");
+                    char str[50];
+                    scanf("%s", str);
+                    InfoChange(Items, str);
+
+#ifdef DEBUG
+                    printf("%s", str);
+#endif
+
+                }
                 break;
+
+                case 2:
+                {
+                    system("cls");
+                    printf("你想删除哪个商品？\n");
+                    char str[50];
+                    scanf("%s", str);
+                    InfoDelete(Items, str);
+
+#ifdef DEBUG
+                    printf("%s", str);
+#endif
+
+                }
+                break;
+
+                case 3:
+                    system("cls");
+                    printf("目前的商品如下\n");
+                    OutputAll(Items);
+                    InfoFlush(Items);
+
+                    break;
+
+                default:
+                    break;
+                }
             }
-        }
+        }    
     }
 
     return 0;

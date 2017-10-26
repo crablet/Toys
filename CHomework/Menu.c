@@ -5,8 +5,8 @@ extern char Hit = -1;
 
 void ShowMenu()
 {
-    if (_kbhit())
-    {
+    //if (_kbhit())
+    //{
         Hit = _getch();
 
         // If Up.
@@ -67,5 +67,5 @@ void ShowMenu()
             SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY);
             break;
         }
-    }
+    //}
 }

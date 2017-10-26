@@ -66,6 +66,7 @@ int InfoSearch(Item *Items[], const char *str, unsigned Flag)
         return -2;
     }
 
+    _getch();
     ShowMenu();
 }
 
@@ -118,6 +119,7 @@ void InfoChange(Item *Items[], const char *str)
         Items[i]->Price = Price;
     }
 
+    _getch();
     ShowMenu();
 }
 
@@ -143,6 +145,7 @@ void InfoDelete(Item *Items[], const char *str)
         --Tail;
     }
 
+    _getch();
     ShowMenu();
 }
 
@@ -180,5 +183,6 @@ void OutputAll(Item *Items[])
         ++i;
     }
 
+    _getch();
     ShowMenu();
 }
