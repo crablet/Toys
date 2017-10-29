@@ -3,7 +3,7 @@
 * Platform: Windows 10               *
 * IDE: Visual Studio 2017 (15.4.0)   *
 * Compiler: MSVC 1911                *
-* Last Modified: 2017/10/21 16:24    *
+* Last Modified: 2017/10/29 10:23    *
 *                                    *
 **************************************/
 
@@ -18,9 +18,9 @@ extern char Hit;
 
 int main(void)
 {
-    SetConsoleTitle("Items Management System");
+    SetConsoleTitle("商品管理系统");
     CONSOLE_CURSOR_INFO CursorInfo = { 1, 0 };
-    //HideTheCursor(GetStdHandle(STD_OUTPUT_HANDLE), CursorInfo);
+    HideTheCursor(GetStdHandle(STD_OUTPUT_HANDLE), CursorInfo);
     system("mode con cols=45 lines=25");
     printf("\n\n\n\n\n\n\n");
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED);
@@ -35,6 +35,7 @@ int main(void)
 
     while (1)
     {
+        HideTheCursor(GetStdHandle(STD_OUTPUT_HANDLE), CursorInfo);
         if (_kbhit())
         {
             ShowMenu();
@@ -46,6 +47,7 @@ int main(void)
                 case 0:
                 {
                     system("cls");
+                    ShowTheCursor(GetStdHandle(STD_OUTPUT_HANDLE), CursorInfo);
                     printf("你想查询哪个商品？\n");
                     char str[50];
                     scanf("%s", str);
@@ -61,6 +63,7 @@ int main(void)
                 case 1:
                 {
                     system("cls");
+                    ShowTheCursor(GetStdHandle(STD_OUTPUT_HANDLE), CursorInfo);
                     printf("你想修改哪个商品的信息？\n");
                     char str[50];
                     scanf("%s", str);
@@ -76,6 +79,7 @@ int main(void)
                 case 2:
                 {
                     system("cls");
+                    ShowTheCursor(GetStdHandle(STD_OUTPUT_HANDLE), CursorInfo);
                     printf("你想删除哪个商品？\n");
                     char str[50];
                     scanf("%s", str);
@@ -90,6 +94,7 @@ int main(void)
 
                 case 3:
                     system("cls");
+                    ShowTheCursor(GetStdHandle(STD_OUTPUT_HANDLE), CursorInfo);
                     printf("目前的商品如下\n");
                     OutputAll(Items);
                     InfoFlush(Items);
