@@ -151,7 +151,7 @@ void InfoDelete(Item *Items[], const char *str)
 
 void InfoFlush(Item *Items[])
 {
-    FILE *fp = fopen("C:\\Users\\Crablet\\source\\repos\\CHomeWork\\Debug\\data", "w+");
+    FILE *fp = fopen("C:\\Users\\Crablet\\source\\repos\\CHomework\\Debug\\data", "w+");
     if (fp == NULL)
     {
         printf("Cannot find the file.\n");
