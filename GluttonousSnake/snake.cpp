@@ -94,7 +94,8 @@ public:
     }
 };
 
-void DrawSnake(const vector<_Snake> &Snake)
+template <typename T>
+void DrawSnake(const T &Snake)
 {
     // Print the head of snake.
     GotoXY(Snake[0].X, Snake[0].Y);
@@ -108,7 +109,8 @@ void DrawSnake(const vector<_Snake> &Snake)
     }
 }
 
-bool IsAlive(const vector<_Snake> &Snake)
+template <typename T>
+bool IsAlive(const T &Snake)
 {
     // The head of snake touches the wall.
     if (Snake.front().X == 0 || Snake.front().Y == 0
@@ -128,7 +130,8 @@ bool IsAlive(const vector<_Snake> &Snake)
     return true;
 }
 
-inline void InitSnake(vector<_Snake> &Snake)
+template <typename T>
+inline void InitSnake(T &Snake)
 {
     // I assume that you can got 16 points at least.
     Snake.reserve(16);
@@ -146,7 +149,8 @@ struct _Food
     unsigned X, Y;
 };
 
-void DrawFood(struct _Food &Food, const vector<_Snake> &Snake)
+template <typename F, typename S>
+void DrawFood(F &Food, const S &Snake)
 {
     while (true)
     {
@@ -176,7 +180,8 @@ void DrawFood(struct _Food &Food, const vector<_Snake> &Snake)
     putchar('8');
 }
 
-bool ContinueToGo(vector<_Snake> &Snake, struct _Food &Food, unsigned Where)
+template <typename F, typename S>
+bool ContinueToGo(S &Snake, F &Food, unsigned Where)
 {
     // Backup for the extension of the snake.
     const auto PreTail = Snake.back();
@@ -356,16 +361,16 @@ int main()
                 for (const auto &r : Scores)
                 {
                     ++i;
-                    cout << i << ":   " << r.first << "      " 
-                         << std::put_time(std::localtime(&r.second), "%F %T") << endl;
+                    cout << i << ":   " << r.first << "      "
+                        << std::put_time(std::localtime(&r.second), "%F %T") << endl;
                 }
             }
 
             putchar('\n');
-            sort(Scores.begin(), Scores.end(), [](pair<int, time_t> m, pair<int, time_t> n) 
-                                                 { 
-                                                    return m.first > n.first;
-                                                 });
+            sort(Scores.begin(), Scores.end(), [](pair<int, time_t> m, pair<int, time_t> n)
+            {
+                return m.first > n.first;
+            });
             cout << "The highest score is: " << Scores.front().first << endl;
 
             break;
