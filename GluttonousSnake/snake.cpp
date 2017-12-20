@@ -367,7 +367,7 @@ int main()
             }
 
             putchar('\n');
-            sort(Scores.begin(), Scores.end(), [](pair<int, time_t> m, pair<int, time_t> n)
+            sort(Scores.begin(), Scores.end(), [](const pair<int, time_t> &m, const pair<int, time_t> &n)
             {
                 return m.first > n.first;
             });
