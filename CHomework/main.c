@@ -99,7 +99,8 @@ int main(void)
                     OutputAll(Items);
                     InfoFlush(Items);
 
-                    break;
+                    _getch();
+                    return 0;
 
                 default:
                     break;
