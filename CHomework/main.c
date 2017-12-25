@@ -1,9 +1,9 @@
 /**************************************
 *                                    *
 * Platform: Windows 10               *
-* IDE: Visual Studio 2017 (15.4.0)   *
+* IDE: Visual Studio 2017 (15.5.2)   *
 * Compiler: MSVC 1911                *
-* Last Modified: 2017/10/29 10:23    *
+* Last Modified: 2017/12/25 11:34    *
 *                                    *
 **************************************/
 
