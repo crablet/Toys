@@ -1,6 +1,8 @@
 #ifndef CURSOR_H
 #define CURSOR_H
 
+#pragma warning(disable : 4996)
+
 #include <Windows.h>
 #include <stdbool.h>
 #include <conio.h>

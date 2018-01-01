@@ -1,3 +1,5 @@
+#pragma warning(disable : 4996)
+
 #include <string.h>
 #include <stdio.h>
 #include <malloc.h>

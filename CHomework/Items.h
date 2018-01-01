@@ -1,6 +1,8 @@
 #ifndef ITEMS_H
 #define ITEMS_H
 
+#pragma warning(disable : 4996)
+
 #define CAPACITY 50
 #define HEAD 0
 #define FIND_ONLY 0

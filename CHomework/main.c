@@ -7,6 +7,7 @@
 *                                    *
 **************************************/
 
+#pragma warning(disable : 4996)
 #include <stdio.h>
 #include <Windows.h>
 #include "Cursor.h"

@@ -1,3 +1,5 @@
+#pragma warning(disable : 4996)
+
 #include "Menu.h"
 
 extern int Control = 0;
