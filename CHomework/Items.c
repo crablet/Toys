@@ -88,7 +88,7 @@ void InfoInsert(Item *Items[], const char *str, double Price)
     ++Tail;
 }
 
-inline void StrReplace(char *Destination, const char *Source)
+void StrReplace(char *Destination, const char *Source)
 {
     memset(Destination, 0, sizeof(Destination));
     strcpy(Destination, Source);

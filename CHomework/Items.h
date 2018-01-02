@@ -20,7 +20,7 @@ void InfoInsert(Item *Items[], const char *str, double Price);
 void InfoChange(Item *Items[], const char *str);
 void InfoDelete(Item *Items[], const char *str);
 void InfoFlush(Item *Items[]);
-inline void StrReplace(char *Destination, const char *Source);
+void StrReplace(char *Destination, const char *Source);
 void OutputAll(Item *Items[]);
 
 #endif // !ITEMS_H
