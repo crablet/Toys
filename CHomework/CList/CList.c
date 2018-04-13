@@ -40,16 +40,27 @@ void ListDestroy(ListPtr h)
 
 void ListCheck(ListPtr L)
 {
-    ListPtr p = L->Next, q;
+    ListPtr p = L->Next, q, Pre = L;
     while (p != NULL && p->Next != NULL)
     {
         bool Changed = false;
-        if (p->Data.StuID == p->Next->Data.StuID &&
-            p->Data.Age < p->Next->Data.Age)
+        if (p->Data.StuID == p->Next->Data.StuID)
         {
-            q = p->Next;
-            p->Next = q->Next;
-            free(q);
+            if (p->Data.Age > p->Next->Data.Age)
+            {
+                q = p->Next;
+                p->Next = q->Next;
+
+                free(q);
+            }
+            else
+            {
+                q = p;
+                Pre->Next = q->Next;
+                p = p->Next;
+
+                free(q);
+            }
 
             Changed = true;
         }
@@ -57,6 +68,7 @@ void ListCheck(ListPtr L)
         if (!Changed)
         {
             p = p->Next;
+            Pre = Pre->Next;
         }
     }
 }
@@ -208,6 +220,12 @@ int main(void)
 
     ListPtr M = ListMergeReverse(L, LL);
 
+    OutPut(M);
+
+    ListCheck(M);
+
+    puts("-----------------------------");
+    puts("Output:");
     OutPut(M);
 
     ListDestroy(L);
