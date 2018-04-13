@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 typedef struct StuInfo
 {
@@ -35,6 +36,29 @@ void ListDestroy(ListPtr h)
     }
 
     free(Pre);
+}
+
+void ListCheck(ListPtr L)
+{
+    ListPtr p = L->Next, q;
+    while (p != NULL && p->Next != NULL)
+    {
+        bool Changed = false;
+        if (p->Data.StuID == p->Next->Data.StuID &&
+            p->Data.Age < p->Next->Data.Age)
+        {
+            q = p->Next;
+            p->Next = q->Next;
+            free(q);
+
+            Changed = true;
+        }
+
+        if (!Changed)
+        {
+            p = p->Next;
+        }
+    }
 }
 
 void OutPut(ListPtr La)
