@@ -23,7 +23,7 @@ void CreatHT(HTNode ht[], int n0)
         ht[i].Parent = ht[i].LChild = ht[i].RChild = -1;
     }
 
-    for (int i = n0; i <= 2 * n0 - 2; ++i)
+    for (int i = n0; i < 2 * n0 - 1; ++i)
     {
         int Min1 = 1 << 15, Min2 = 1 << 15;
         int LNode = -1, RNode = -1;
