@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="LearnUWPCSharp.FriendsPage"
+    x:Class="LearnUWPCSharp.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:LearnUWPCSharp"
@@ -8,7 +8,14 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
-
-    </Grid>
+    <RelativePanel>
+        <TextBlock Text="基本设置"
+                   RelativePanel.AlignTopWithPanel="True"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   Width="150"
+                   Height="66"
+                   FontSize="35"
+                   FontWeight="Bold"
+                   x:Name="mainSetting"/>
+    </RelativePanel>
 </Page>

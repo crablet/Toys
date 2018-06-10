@@ -11,20 +11,27 @@
     <RelativePanel>
         <Button Content="删除任务" 
                 Click="DeleteTask"
-                x:Name="deleteTask"/>
+                x:Name="deleteTask"
+                RelativePanel.RightOf="addNewTask"
+                RelativePanel.AlignTopWith="addNewTask"
+                Margin="10,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
         <Button Content="添加任务"
                 Click="AddNewTask"
                 x:Name="addNewTask"
-                RelativePanel.RightOf="TimePicker"/>
+                RelativePanel.AlignRightWith="DatePicker"
+                RelativePanel.Below="DatePicker"
+                Margin="0, 10, 0, 0"/>
         <DatePicker x:Name="DatePicker"
                     DateChanged="AddNewDate"
-                    RelativePanel.RightOf="deleteTask"/>
-        <TimePicker x:Name="TimePicker"
-                    TimeChanged="AddNewTime"
-                    RelativePanel.RightOf="DatePicker"
-                    RelativePanel.AlignBottomWith="DatePicker"
-                    Margin="-3, 0, 0, 0"/>
-        <ListView RelativePanel.Below="DatePicker"
+                    RelativePanel.AlignLeftWithPanel="True"
+                    Height="32"/>
+        <TextBox x:Name="TaskAdder"
+                 TextChanged="AddNewTask"
+                 RelativePanel.RightOf="DatePicker"
+                 RelativePanel.AlignTopWith="DatePicker"
+                 Width="300"
+                 Height="32"/>
+        <ListView RelativePanel.Below="addNewTask"
                   ItemsSource="{Binding Path=Dates}" DisplayMemberPath="MyDate"
                   SelectedItem="{Binding Path=SelectedTask, Mode=TwoWay}"/>
     </RelativePanel>

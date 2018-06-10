@@ -11,7 +11,8 @@
     <NavigationView x:Name="NavView"
                     ItemInvoked="NavView_ItemInvoked"
                     Loaded="NavView_Loaded"
-                    IsSettingsVisible="True">
+                    IsSettingsVisible="True"
+                    Background="Pink">
         <NavigationView.MenuItems>
             <NavigationViewItem x:Uid="HomeNavItem"
                                 Content="主页"
@@ -24,15 +25,15 @@
             <NavigationViewItemHeader Content="我的"/>
             <NavigationViewItem x:Uid="TasksNavItem"
                                 Icon="AllApps"
-                                Content="目标"
+                                Content="提醒"
                                 Tag="Tasks"/>
             <NavigationViewItem x:Uid="ContestsNavItem"
                                 Icon="Video"
-                                Content="比赛"
+                                Content="视频"
                                 Tag="Contests"/>
             <NavigationViewItem x:Uid="FriendNavItem"
                                 Icon="Audio"
-                                Content="朋友"
+                                Content="社区"
                                 Tag="Friends"/>
         </NavigationView.MenuItems>
 

@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -25,6 +28,19 @@ namespace LearnUWPCSharp
         public MainPage()
         {
             this.InitializeComponent();
+
+            var titleBar = ApplicationView.GetForCurrentView().TitleBar;
+            var deepPink = Color.FromArgb(255, 255, 20, 147);
+            var hotPink = Color.FromArgb(255, 255, 105, 180);
+            var darkPink = Color.FromArgb(255, 215, 0, 107);
+            titleBar.BackgroundColor = deepPink;
+            titleBar.ButtonBackgroundColor = deepPink;
+            titleBar.ButtonHoverBackgroundColor = hotPink;
+            titleBar.ButtonPressedBackgroundColor = darkPink;
+            titleBar.InactiveBackgroundColor = titleBar.InactiveForegroundColor = hotPink;
+            titleBar.ButtonInactiveBackgroundColor = hotPink;
+
+            ContentFrame.Navigate(typeof(HomePage));
         }
 
         private void NavView_Loaded(object sender, RoutedEventArgs e)

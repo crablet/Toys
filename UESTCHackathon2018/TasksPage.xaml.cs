@@ -43,12 +43,6 @@ namespace LearnUWPCSharp
             NewDate = this.DatePicker.Date;
         }
 
-        private TimeSpan NewTime { get; set; } = TimeSpan.Zero;
-        private void AddNewTime(object sender, TimePickerValueChangedEventArgs e)
-        {
-            NewTime = this.TimePicker.Time;
-        }
-
         private void DeleteTask(object sender, RoutedEventArgs e)
         {
             if (this.vm.SelectedTask != null)
@@ -59,7 +53,13 @@ namespace LearnUWPCSharp
 
         private void AddNewTask(object sender, RoutedEventArgs e)
         {
-            this.vm.Dates.Add(new Date() { MyDate = this.NewDate.ToString() + this.NewTime.ToString() });
+            this.vm.Dates.Add(new Date() { MyDate = this.NewDate.ToString() + ' ' + this.task });
+        }
+
+        private string task { get; set; } = string.Empty;
+        private void AddNewTask(object sender, TextChangedEventArgs e)
+        {
+            task = this.TaskAdder.Text;
         }
     }
 

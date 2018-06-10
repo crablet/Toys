@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="LearnUWPCSharp.SettingsPage"
+    x:Class="LearnUWPCSharp.ContestsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:LearnUWPCSharp"
@@ -9,6 +9,6 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-
+        <WebView Source="http://class.dxy.cn/clazz/search?keywords=%E5%A6%87%E4%BA%A7"/>
     </Grid>
 </Page>
