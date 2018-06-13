@@ -1,13 +1,10 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
 #include <stdbool.h>
 
 void QuickSort(int Arr[], int l, int r)
 {
-    int p = l + rand() % (r - l + 1);
-    int Mid = Arr[p];
+    int Mid = Arr[(l + r) >> 1];
     int i = l, j = r;
     do
     {
@@ -96,8 +93,6 @@ bool BinarySearch(int *First, int *Last, const int Val)
 
 int main()
 {
-    srand((unsigned)time(NULL));
-
     int Arr[100];
 
     printf("Please input the sequence\n");
