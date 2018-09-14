@@ -1,4 +1,5 @@
 from splinter import Browser
+from getpass import getpass
 import time
 import random
 
@@ -7,7 +8,7 @@ def Wait():
 
 ExecutablePath = input("Please your chromedriver.exe's path: ")
 UserName = input("Please input your username: ")
-Password = input("Please input your password: ")
+Password = getpass("Please input your password: ")
 
 Brs = Browser(driver_name="chrome", executable_path=ExecutablePath)
 URL = "http://www.wlxt.uestc.edu.cn/wlxt/index.aspx"
