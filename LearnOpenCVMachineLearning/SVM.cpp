@@ -1,4 +1,4 @@
-// 参考资料：
+// 参考资料：（建议先阅读此处）
 // http://www.opencv.org.cn/opencvdoc/2.3.2/html/doc/tutorials/ml/introduction_to_svm/introduction_to_svm.html#introductiontosvms
 // https://docs.opencv.org/3.4/d1/d73/tutorial_introduction_to_svm.html
 // http://blog.sina.com.cn/s/blog_662c7859010105za.html
