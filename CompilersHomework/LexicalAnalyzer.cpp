@@ -399,6 +399,10 @@ void Lexer::Lex()
 
 int main()
 {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    std::cout.tie(nullptr);
+
     auto MyLexer = &Lexer::Instance("In.txt");
     MyLexer->Skip();
     MyLexer->GetChar();
