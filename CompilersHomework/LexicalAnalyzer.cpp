@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include <string>
 #include <unordered_map>
 #include <cctype>
@@ -9,7 +10,7 @@ class Lexer
 public:
     Lexer() = default;
     Lexer(const std::string &InFileName)
-        : File(InFileName, std::ios::in), FirstRun(true)
+        : File(InFileName, std::ios::in), FirstRun(true), NowLine(0), LastLine(0)
     {
     }
 
@@ -27,7 +28,7 @@ public:
     void GetNonBlank();
     void CheckSymbol(char Ch, char NextCh);
     void CheckKeywords(const std::string &Str);
-    void Lex();
+    void Run();
     auto GetNextToken()
     {
         return NextToken;
@@ -66,6 +67,7 @@ private:
     char NextChar, Next2Char;
     int NextToken;
     int CharClass;
+    int NowLine, LastLine;
     bool FirstRun;
 
     std::fstream File;
@@ -78,6 +80,7 @@ private:
         {"for", 261},
         {"return", 262}
     };
+    std::unordered_map<int, int> ConstantCount;
 
 public:
     Lexer(const Lexer&) = delete;
@@ -94,6 +97,8 @@ void Lexer::Skip()
         {
             std::string Dummy;
             std::getline(File, Dummy);
+
+            ++NowLine;
         }
         else
         {
@@ -146,6 +151,11 @@ void Lexer::GetNonBlank()
 {
     while (std::isspace(NextChar))
     {
+        if (NextChar == '\n')
+        {
+            ++NowLine;
+        }
+
         GetChar();
     }
 }
@@ -231,7 +241,7 @@ void Lexer::CheckSymbol(char Ch, char NextCh)
 
     case '\\':
         AddChar();
-        NextCh = Ch;
+        NextToken = Ch;
 
         if (NextCh == '=')
         {
@@ -339,7 +349,7 @@ void Lexer::CheckKeywords(const std::string &Str)
     }
 }
 
-void Lexer::Lex()
+void Lexer::Run()
 {
     Lexeme.clear();
     GetNonBlank();
@@ -375,6 +385,8 @@ void Lexer::Lex()
 
         NextToken = static_cast<int>(Lex::INT);
 
+        ++ConstantCount[std::stoi(Lexeme)];
+
         break;
 
     case (static_cast<int>(Lex::UNKONWN)):
@@ -394,7 +406,19 @@ void Lexer::Lex()
         break;
     }
 
-    std::cout << '<' << NextToken << ", " << Lexeme << '>' << std::endl;
+    if (LastLine != NowLine)
+    {
+        if (LastLine)   // Skip the first line.
+        {
+            std::cout << std::endl; // Set a new line between each bars.
+        }
+        LastLine = NowLine;
+    }
+
+    std::cout << "line " << std::setfill('0') << std::setw(2) << NowLine << ": ("
+        << std::setfill('0') << std::setw(3) << NextToken << ", "
+        << (NextToken == static_cast<int>(Lex::INT) ? ConstantCount[std::stoi(Lexeme)] : 0) << ") "
+        << Lexeme << std::endl;
 }
 
 int main()
@@ -408,7 +432,7 @@ int main()
     MyLexer->GetChar();
     while (MyLexer->GetNextToken() != EOF)
     {
-        MyLexer->Lex();
+        MyLexer->Run();
     }
 
     return 0;
