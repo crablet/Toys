@@ -416,9 +416,9 @@ void Lexer::Run()
     }
 
     std::cout << "line " << std::setfill('0') << std::setw(2) << NowLine << ": ("
-        << std::setfill('0') << std::setw(3) << NextToken << ", "
-        << (NextToken == static_cast<int>(Lex::INT) ? ConstantCount[std::stoi(Lexeme)] : 0) << ") "
-        << Lexeme << std::endl;
+              << std::setfill('0') << std::setw(3) << NextToken << ", "
+              << (NextToken == static_cast<int>(Lex::INT) ? ConstantCount[std::stoi(Lexeme)] : 0) << ") "
+              << Lexeme << std::endl;
 }
 
 int main()
