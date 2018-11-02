@@ -6,9 +6,9 @@ Factor -> (Expr) | i
 
 AFTER:
 Expr   -> TermExpr_
-Expr_  -> +TermExpr_ | -TermExpr_ | ¦Å
+Expr_  -> +TermExpr_ | -TermExpr_ | \epsilon
 Term   -> FactorTerm_
-Term_  -> *FactorTerm_ | /FactorTerm_ | ¦Å
+Term_  -> *FactorTerm_ | /FactorTerm_ | \epsilon
 Factor -> (Expr) | i
 */
 #include <iostream>
