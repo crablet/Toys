@@ -1,4 +1,5 @@
-﻿#include <iostream>
+﻿#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
 #include <Windows.h>
 #include <vector>
 #include <random>
@@ -10,50 +11,55 @@
 
 auto Handle = GetStdHandle(STD_OUTPUT_HANDLE);
 COORD Coord;
-unsigned Col, Row;
+int Col, Row;
 bool IsAte = false;
-
-using namespace std;
 
 void DrawWall()
 {
-    cout << " ";
-    for (unsigned i = 0; i < Col; ++i)
-        cout << "#";
-    cout << endl;
-    for (unsigned j = 0; j < Row - 1; ++j)
+    std::cout << " ";
+    for (int i = 0; i < Col; ++i)
     {
-        cout << "|";
-        for (unsigned q = 0; q < Col; ++q)
-            cout << " ";
-        cout << "|" << endl;
+        std::cout << "#";
     }
-    cout << " ";
-    for (unsigned i = 0; i < Col; ++i)
-        cout << "#";
-    cout << endl;
+    std::cout << std::endl;
+    for (int j = 0; j < Row - 1; ++j)
+    {
+        std::cout << ".";
+        for (int q = 0; q < Col; ++q)
+        {
+            std::cout << " ";
+        }
+        std::cout << "." << std::endl;
+    }
+    std::cout << " ";
+    for (int i = 0; i < Col; ++i)
+    {
+        std::cout << "#";
+    }
+    std::cout << std::endl;
 }
 
-inline void HideMouse(HANDLE &Handle, CONSOLE_CURSOR_INFO &CursorInfo)
+void HideMouse(HANDLE &Handle, CONSOLE_CURSOR_INFO &CursorInfo)
 {
     GetConsoleCursorInfo(Handle, &CursorInfo);
     CursorInfo.bVisible = false;
     SetConsoleCursorInfo(Handle, &CursorInfo);
 }
 
-inline void ShowMouse(HANDLE &Handle, CONSOLE_CURSOR_INFO &CursorInfo)
+void ShowMouse(HANDLE &Handle, CONSOLE_CURSOR_INFO &CursorInfo)
 {
     GetConsoleCursorInfo(Handle, &CursorInfo);
     CursorInfo.bVisible = true;
     SetConsoleCursorInfo(Handle, &CursorInfo);
 }
 
-int Random(unsigned Range)
+int Random(int Range)
 {
-    random_device RD;
-    mt19937 gen(RD());
-    uniform_int_distribution<> dis(1, Range);
-    return dis(gen);
+    std::random_device RD;
+    std::mt19937 Gen(RD());
+    std::uniform_int_distribution<> Dis(1, Range);
+
+    return Dis(Gen);
 }
 
 inline void GotoXY(int x, int y)
@@ -63,32 +69,35 @@ inline void GotoXY(int x, int y)
     SetConsoleCursorPosition(Handle, Coord);
 }
 
-class _Snake
+class Snake_
 {
 public:
-    unsigned X, Y;
+    int X, Y;
 
-    _Snake() = default;
+    Snake_() = default;
 
-    _Snake(unsigned x, unsigned y) :
+    Snake_(int x, int y) :
         X(x), Y(y)
     {
     }
-    ~_Snake() = default;
+    ~Snake_() = default;
 
-    inline void MoveUp()
+    void MoveUp()
     {
         --X;
     }
-    inline void MoveDown()
+
+    void MoveDown()
     {
         ++X;
     }
-    inline void MoveLeft()
+
+    void MoveLeft()
     {
         --Y;
     }
-    inline void MoveRight()
+
+    void MoveRight()
     {
         ++Y;
     }
@@ -99,13 +108,13 @@ void DrawSnake(const T &Snake)
 {
     // Print the head of snake.
     GotoXY(Snake[0].X, Snake[0].Y);
-    putchar('@');
+    std::cout << '@';
 
     //Print the body of snake.
     for (auto iter = Snake.cbegin() + 1; iter != Snake.cend(); ++iter)
     {
         GotoXY(iter->X, iter->Y);
-        putchar('O');
+        std::cout << 'O';
     }
 }
 
@@ -123,7 +132,9 @@ bool IsAlive(const T &Snake)
     for (auto iter = Snake.cbegin() + 1; iter != Snake.cend(); ++iter)
     {
         if (Snake.front().X == iter->X && Snake.front().Y == iter->Y)
+        {
             return false;
+        }
     }
 
     // Still alive.
@@ -137,16 +148,16 @@ inline void InitSnake(T &Snake)
     Snake.reserve(16);
 
     // Be born in the middle of the field.
-    Snake.emplace_back(Col / 2, (Row / 2) + 0);
-    Snake.emplace_back(Col / 2, (Row / 2) + 1);
-    Snake.emplace_back(Col / 2, (Row / 2) + 2);
-    Snake.emplace_back(Col / 2, (Row / 2) + 3);
-    Snake.emplace_back(Col / 2, (Row / 2) + 4);
+    Snake.emplace_back(Row / 2, (Col / 2) + 0);
+    Snake.emplace_back(Row / 2, (Col / 2) + 1);
+    Snake.emplace_back(Row / 2, (Col / 2) + 2);
+    Snake.emplace_back(Row / 2, (Col / 2) + 3);
+    Snake.emplace_back(Row / 2, (Col / 2) + 4);
 }
 
-struct _Food
+struct Food_
 {
-    unsigned X, Y;
+    int X, Y;
 };
 
 template <typename F, typename S>
@@ -154,30 +165,33 @@ void DrawFood(F &Food, const S &Snake)
 {
     while (true)
     {
-        bool Flag = true;
+        bool OK = true;
 
         // Initialize Food(x, y).
         Food.X = Random(Row - 1);
         Food.Y = Random(Col - 1);
 
         // Check if (Food(x, y) == Snake(x, y)).
-        for (const auto &S : Snake)
+        for (const auto &s : Snake)
         {
-            if (S.X == Food.X && S.Y == Food.Y)
+            if (s.X == Food.X && s.Y == Food.Y)
             {
-                Flag = false;
+                OK = false;
+
                 break;
             }
         }
 
         // Check passed.
-        if (Flag)
+        if (OK)
+        {
             break;
+        }
     }
 
     // Draw the food.
     GotoXY(Food.X, Food.Y);
-    putchar('8');
+    std::cout << '8';
 }
 
 template <typename F, typename S>
@@ -197,23 +211,32 @@ bool ContinueToGo(S &Snake, F &Food, unsigned Where)
     {
     case 0:
         Snake.front().MoveUp();
+
         break;
+
     case 1:
         Snake.front().MoveDown();
+
         break;
+
     case 2:
         Snake.front().MoveLeft();
+
         break;
+
     case 3:
         Snake.front().MoveRight();
+
         break;
+
     default:
+
         break;
     }
 
     // Cover the previous '@'(head of snake).
     GotoXY(Snake[1].X, Snake[1].Y);
-    putchar('O');
+    std::cout << 'O';
 
     // If it eats.
     if (Snake.front().X == Food.X && Snake.front().Y == Food.Y)
@@ -231,12 +254,12 @@ bool ContinueToGo(S &Snake, F &Food, unsigned Where)
     {
         // Cover the 'O'. ('O' => ' ')
         GotoXY(PreTail.X, PreTail.Y);
-        putchar(' ');
+        std::cout << ' ';
     }
 
     // Draw the head of snake.
     GotoXY(Snake.front().X, Snake.front().Y);
-    putchar('@');
+    std::cout << '@';
 
     if (!IsAlive(Snake))
     {
@@ -248,30 +271,34 @@ bool ContinueToGo(S &Snake, F &Food, unsigned Where)
 
 int main()
 {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    std::cout.tie(nullptr);
+
     SetConsoleTitle("Gluttonous Snake");
 
-    vector<pair<int, time_t>> Scores;
+    std::vector<std::pair<std::size_t, std::time_t>> Scores;
 
-    while (1)
+    while (true)
     {
-        cout << "Please input col and row: ";
-        cin >> Col >> Row;
+        std::cout << "Please input col and row: ";
+        std::cin >> Col >> Row;
         std::system("cls");
 
         CONSOLE_CURSOR_INFO CursorInfo;
         HideMouse(Handle, CursorInfo);
 
-        vector<_Snake> Snake;
+        std::vector<Snake_> Snake;
         InitSnake(Snake);
 
-        struct _Food Food;
+        struct Food_ Food;
 
         DrawWall();
         DrawSnake(Snake);
         DrawFood(Food, Snake);
 
-        unsigned Where = 2;
-        unsigned long Difficulty = 500;
+        int Where = 2;
+        int Difficulty = 500;
 
         char PreHit = 0;
 
@@ -329,55 +356,57 @@ int main()
                 break;
 
             if (IsAte)
-                Difficulty = static_cast<unsigned long>(Difficulty - Snake.size() * 0.3);
+            {
+                Difficulty = static_cast<int>(Difficulty - Snake.size() * 0.3);
+            }
 
             GotoXY(Row + 3, 0);
-            cout << "Score: " << Snake.size() - 5 << endl;
-            cout << "Speed: " << (500 - Difficulty) << endl;
+            std::cout << "Score: " << Snake.size() - 5 << std::endl;
+            std::cout << "Speed: " << (500 - Difficulty) << std::endl;
         }
         GotoXY(Row + 3, 0);
-        cout << "Your final score is " << Snake.size() - 5 << endl;
+        std::cout << "Your final score is " << Snake.size() - 5 << std::endl;
 
         const auto Now = std::chrono::system_clock::now();
         const auto Now_c = std::chrono::system_clock::to_time_t(Now);
         Scores.push_back({ Snake.size() - 5, Now_c });
 
-        char C;
         ShowMouse(Handle, CursorInfo);
-        cout << "Continue? (Y/N)" << endl;
-        cin >> C;
+        std::cout << "Continue? (Y/N)" << std::endl;
+        char C;
+        std::cin >> C;
         if (C == 'Y')
         {
             std::system("cls");
         }
         else if (C == 'N')
         {
-            putchar('\n');
-            putchar('\n');
-            cout << "NO.  Score          Time" << endl;
+            std::cout << "\n\n";
+            std::cout << "NO.  Score          Time" << std::endl;
             if (!Scores.empty())
             {
                 int i = 0;
                 for (const auto &r : Scores)
                 {
                     ++i;
-                    cout << i << ":   " << r.first << "      "
-                        << std::put_time(std::localtime(&r.second), "%F %T") << endl;
+                    std::cout << i << ":   " << r.first << "      "
+                        << std::put_time(std::localtime(&r.second), "%F %T") << std::endl;
                 }
             }
 
-            putchar('\n');
-            sort(Scores.begin(), Scores.end(), [](const pair<int, time_t> &m, const pair<int, time_t> &n)
+            std::cout << '\n';
+            std::sort(Scores.begin(), Scores.end(), [](const auto &m, const auto &n)
             {
                 return m.first > n.first;
             });
-            cout << "The highest score is: " << Scores.front().first << endl;
+            std::cout << "The highest score is: " << Scores.front().first << std::endl;
 
             break;
         }
         else
         {
-            cout << "Input error." << endl;
+            std::cout << "Input error." << std::endl;
+
             break;
         }
     }
