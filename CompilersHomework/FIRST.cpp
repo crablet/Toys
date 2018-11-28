@@ -6,6 +6,10 @@
 
 int main()
 {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    std::cout.tie(nullptr);
+
     int n;
     std::cin >> n;
     std::unordered_map<char, std::vector<std::string>> Grammar;
@@ -38,20 +42,12 @@ int main()
                         std::size_t i;
                         for (i = 1; i < X.size(); ++i)
                         {
-                            if (FIRST[X[i]].count('~'))
+                            for (const auto &t : FIRST[X[i]])
                             {
-                                for (const auto &t : FIRST[X[i]])
-                                {
-                                    FIRST[Now].insert(t);
-                                }
+                                FIRST[Now].insert(t);
                             }
-                            else
+                            if (!FIRST[X[i]].count('~'))
                             {
-                                for (const auto &t : FIRST[X[i]])
-                                {
-                                    FIRST[Now].insert(t);
-                                }
-
                                 break;
                             }
                         }
@@ -66,30 +62,15 @@ int main()
                     FIRST[Now].insert('~');
                     if (X.size() > 1)
                     {
-                        for (const auto &t : FIRST[X[1]])
+                        for (std::size_t i = 1; i < X.size(); ++i)
                         {
-                            FIRST[Now].insert(t);
-                        }
-                        if (X.size() > 2 && FIRST[X[1]].count('~'))
-                        {
-                            for (std::size_t i = 1; i < X.size(); ++i)
+                            for (const auto &t : FIRST[X[i]])
                             {
-                                if (FIRST[X[i]].count('~'))
-                                {
-                                    for (const auto &t : FIRST[X[i]])
-                                    {
-                                        FIRST[Now].insert(t);
-                                    }
-                                }
-                                else
-                                {
-                                    for (const auto &t : FIRST[X[i]])
-                                    {
-                                        FIRST[Now].insert(t);
-                                    }
-
-                                    break;
-                                }
+                                FIRST[Now].insert(t);
+                            }
+                            if (!FIRST[X[i]].count('~'))
+                            {
+                                break;
                             }
                         }
                     }
@@ -107,6 +88,11 @@ int main()
         {
             break;
         }
+    }
+
+    for (char c = 'a'; c <= 'z'; ++c)
+    {
+        FIRST.erase(c);
     }
 
     for (const auto &rr : FIRST)

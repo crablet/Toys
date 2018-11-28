@@ -6,6 +6,10 @@
 
 int main()
 {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    std::cout.tie(nullptr);
+
     int n;
     std::cin >> n;
     std::unordered_map<char, std::vector<std::string>> Grammar;
@@ -45,20 +49,12 @@ int main()
                         std::size_t i;
                         for (i = 1; i < X.size(); ++i)
                         {
-                            if (FOLLOW[X[i]].count('~'))
+                            for (const auto &t : FOLLOW[X[i]])
                             {
-                                for (const auto &t : FOLLOW[X[i]])
-                                {
-                                    FOLLOW[Now].insert(t);
-                                }
+                                FOLLOW[Now].insert(t);
                             }
-                            else
+                            if (!FOLLOW[X[i]].count('~'))
                             {
-                                for (const auto &t : FOLLOW[X[i]])
-                                {
-                                    FOLLOW[Now].insert(t);
-                                }
-
                                 break;
                             }
                         }
@@ -73,30 +69,15 @@ int main()
                     FOLLOW[Now].insert('~');
                     if (X.size() > 1)
                     {
-                        for (const auto &t : FOLLOW[X[1]])
+                        for (std::size_t i = 1; i < X.size(); ++i)
                         {
-                            FOLLOW[Now].insert(t);
-                        }
-                        if (X.size() > 2 && FOLLOW[X[1]].count('~'))
-                        {
-                            for (std::size_t i = 1; i < X.size(); ++i)
+                            for (const auto &t : FOLLOW[X[i]])
                             {
-                                if (FOLLOW[X[i]].count('~'))
-                                {
-                                    for (const auto &t : FOLLOW[X[i]])
-                                    {
-                                        FOLLOW[Now].insert(t);
-                                    }
-                                }
-                                else
-                                {
-                                    for (const auto &t : FOLLOW[X[i]])
-                                    {
-                                        FOLLOW[Now].insert(t);
-                                    }
-
-                                    break;
-                                }
+                                FOLLOW[Now].insert(t);
+                            }
+                            if (!FOLLOW[X[i]].count('~'))
+                            {
+                                break;
                             }
                         }
                     }
@@ -116,6 +97,11 @@ int main()
         }
     }
     FOLLOW[S].insert('~');
+
+    for (char c = 'a'; c <= 'z'; ++c)
+    {
+        FOLLOW.erase(c);
+    }
 
     for (const auto &rr : FOLLOW)
     {
