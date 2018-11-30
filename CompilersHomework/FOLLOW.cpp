@@ -96,7 +96,7 @@ int main()
             break;
         }
     }
-    FOLLOW[S].insert('~');
+    FOLLOW[S].insert('#');
 
     for (char c = 'a'; c <= 'z'; ++c)
     {
