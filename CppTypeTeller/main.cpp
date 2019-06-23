@@ -3,7 +3,7 @@
 template <typename ...T>
 struct TellMeaningOf
 {
-	void operator()()
+	void operator()() noexcept
 	{
 		std::cout << "[unknown type]";
 	}
@@ -12,7 +12,7 @@ struct TellMeaningOf
 template <>
 struct TellMeaningOf<void>
 {
-	void operator()()
+	void operator()() noexcept
 	{
 		std::cout << "void";
 	}
@@ -21,7 +21,7 @@ struct TellMeaningOf<void>
 template <>
 struct TellMeaningOf<>
 {
-	void operator()()
+	void operator()() noexcept
 	{
 		std::cout << "void";
 	}
@@ -30,7 +30,7 @@ struct TellMeaningOf<>
 template <>
 struct TellMeaningOf<int>
 {
-	void operator()()
+	void operator()() noexcept
 	{
 		std::cout << "int";
 	}
@@ -39,7 +39,7 @@ struct TellMeaningOf<int>
 template <>
 struct TellMeaningOf<double>
 {
-	void operator()()
+	void operator()() noexcept
 	{
 		std::cout << "double";
 	}
@@ -48,7 +48,7 @@ struct TellMeaningOf<double>
 template <>
 struct TellMeaningOf<float>
 {
-	void operator()()
+	void operator()() noexcept
 	{
 		std::cout << "float";
 	}
@@ -57,7 +57,7 @@ struct TellMeaningOf<float>
 template <>
 struct TellMeaningOf<char>
 {
-	void operator()()
+	void operator()() noexcept
 	{
 		std::cout << "char";
 	}
@@ -66,7 +66,7 @@ struct TellMeaningOf<char>
 template <typename T>
 struct TellMeaningOf<T*>
 {
-	void operator()()
+	void operator()() noexcept
 	{
 		std::cout << "pointer to ";
 		TellMeaningOf<T>()();
@@ -76,7 +76,7 @@ struct TellMeaningOf<T*>
 template <typename T>
 struct TellMeaningOf<const T*>
 {
-	void operator()()
+	void operator()() noexcept
 	{
 		std::cout << "pointer to const ";
 		TellMeaningOf<T>()();
@@ -86,7 +86,7 @@ struct TellMeaningOf<const T*>
 template <typename T>
 struct TellMeaningOf<const T>
 {
-	void operator()()
+	void operator()() noexcept
 	{
 		std::cout << "const ";
 		TellMeaningOf<T>()();
@@ -96,7 +96,7 @@ struct TellMeaningOf<const T>
 template <typename T, std::size_t N>
 struct TellMeaningOf<T[N]>
 {
-	void operator()()
+	void operator()() noexcept
 	{
 		std::cout << "array " << N << " of ";
 		TellMeaningOf<T>()();
@@ -106,7 +106,7 @@ struct TellMeaningOf<T[N]>
 template <typename ReturnT, typename ...ParaT>
 struct TellMeaningOf<ReturnT(ParaT...)>
 {
-	void operator()()
+	void operator()() noexcept
 	{
 		std::cout << "function (";
 		TellMeaningOf<ParaT...>()();
@@ -118,7 +118,7 @@ struct TellMeaningOf<ReturnT(ParaT...)>
 template <typename First, typename ...Last>
 struct TellMeaningOf<First, Last...>
 {
-	void operator()()
+	void operator()() noexcept
 	{
 		TellMeaningOf<First>()();
 		std::cout << ", ";
@@ -129,7 +129,6 @@ struct TellMeaningOf<First, Last...>
 int main()
 {
 	TellMeaningOf<char*(*(*)(void))[20]>()();
-	std::cout << std::endl;
 
 	return 0;
 }
