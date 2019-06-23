@@ -1,20 +1,23 @@
 #include <iostream>
+#include <type_traits>
+#include <typeinfo>
 
 template <typename ...T>
-struct TellMeaningOf
-{
-	void operator()() noexcept
-	{
-		std::cout << "[unknown type]";
-	}
-};
+struct TellMeaningOf;
 
-template <>
-struct TellMeaningOf<void>
+template <typename T>
+struct TellMeaningOf<T>
 {
 	void operator()() noexcept
 	{
-		std::cout << "void";
+		if constexpr (!std::is_const_v<T> && std::is_fundamental_v<T>)
+		{
+			std::cout << typeid(T).name();
+		}
+		else
+		{
+			std::cout << "[unknown]";
+		}
 	}
 };
 
@@ -27,39 +30,26 @@ struct TellMeaningOf<>
 	}
 };
 
-template <>
-struct TellMeaningOf<int>
+template <typename ReturnT, typename ...ParaT>
+struct TellMeaningOf<ReturnT(ParaT...)>
 {
 	void operator()() noexcept
 	{
-		std::cout << "int";
+		std::cout << "function (";
+		TellMeaningOf<ParaT...>()();
+		std::cout << ") returning ";
+		TellMeaningOf<ReturnT>()();
 	}
 };
 
-template <>
-struct TellMeaningOf<double>
+template <typename First, typename ...Last>
+struct TellMeaningOf<First, Last...>
 {
 	void operator()() noexcept
 	{
-		std::cout << "double";
-	}
-};
-
-template <>
-struct TellMeaningOf<float>
-{
-	void operator()() noexcept
-	{
-		std::cout << "float";
-	}
-};
-
-template <>
-struct TellMeaningOf<char>
-{
-	void operator()() noexcept
-	{
-		std::cout << "char";
+		TellMeaningOf<First>()();
+		std::cout << ", ";
+		TellMeaningOf<Last...>()();
 	}
 };
 
@@ -100,29 +90,6 @@ struct TellMeaningOf<T[N]>
 	{
 		std::cout << "array " << N << " of ";
 		TellMeaningOf<T>()();
-	}
-};
-
-template <typename ReturnT, typename ...ParaT>
-struct TellMeaningOf<ReturnT(ParaT...)>
-{
-	void operator()() noexcept
-	{
-		std::cout << "function (";
-		TellMeaningOf<ParaT...>()();
-		std::cout << ") returning ";
-		TellMeaningOf<ReturnT>()();
-	}
-};
-
-template <typename First, typename ...Last>
-struct TellMeaningOf<First, Last...>
-{
-	void operator()() noexcept
-	{
-		TellMeaningOf<First>()();
-		std::cout << ", ";
-		TellMeaningOf<Last...>()();
 	}
 };
 
