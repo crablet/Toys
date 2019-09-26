@@ -1,6 +1,7 @@
 ﻿#ifndef GAUSSIANBLUR_H
 #define GAUSSIANBLUR_H
 
+#include <vector>
 #include <cmath>
 
 #include <QPixmap>
@@ -14,24 +15,20 @@ class GaussianBlur
 public:
 	GaussianBlur() = delete;
 	GaussianBlur(const QPixmap &Src, int r = 6, double Sigma = 4.0)
-		: OriginImage{ Src.toImage() },
-		  FirstPassImage{ Src.size(), QImage::Format_RGB32 }, SecondPassImage{ Src.size(), QImage::Format_RGB32 },
-		  r{ r }, Weight{ new double[2 * r + 1] },
-		  Sigma{ Sigma }, C{ 1 / (Sigma * std::sqrt(2 * std::acos(-1.0))) }
+		: OriginImage(Src.toImage()),
+		  FirstPassImage(Src.size(), QImage::Format_RGB32), SecondPassImage(Src.size(), QImage::Format_RGB32),
+		  r(r), Weight(2 * r + 1),
+		  Sigma(Sigma), C(1 / (Sigma * std::sqrt(2 * std::acos(-1.0))))
 	{
 		GetKernal();
 		Blur();
 	}
 
-	~GaussianBlur()
-	{
-		delete[] Weight;
-	}
-
 private:
 	QImage OriginImage, FirstPassImage, SecondPassImage;
+
 	int r;	// 高斯模糊半径
-	double *Weight;	// 权重空间
+	std::vector<double> Weight;	// 权重空间
 	double Sigma, C;	// 高斯函数中的两个参数
 
 public:
