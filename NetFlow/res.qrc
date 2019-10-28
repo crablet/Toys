@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>NetFlowIcon.jpg</file>
+        <file>NetFlowIconSmall.jpg</file>
+    </qresource>
+</RCC>
